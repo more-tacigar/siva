@@ -3,6 +3,16 @@
 -- https://github.com/tacigar/maidroid
 ------------------------------------------------------------
 
+-- siva.registered_methods represents a table that contains
+-- registered methods by siva.register_method function.
+siva.registered_methods = {}
+
+-- siva.register_method registers a new definition of digging method.
+-- Its function must return a table.
+function siva.register_method(method_name, def)
+	siva.registered_methods[method_name] = def
+end
+
 -- is_activated represents whether siva system is activated.
 local is_activated = true
 
@@ -18,6 +28,16 @@ end
 
 -- node_method_map represents a table that maps nodename and dig method.
 local node_method_map = {}
+
+-- siva.associate_node_with_method associates node with method (and arguments)
+function siva.associate_node_with_method(nodename, method_name, arguments)
+	local args = arguments or siva.registered_methods[method_name].default_arguments
+	
+	node_method_map[nodename] = {
+		method_name = method_name,
+		arguments = args,
+	}
+end
 
 -- load a siva config file.
 ;(function()
@@ -60,3 +80,4 @@ end)
 		end
 	end)
 end) ()
+

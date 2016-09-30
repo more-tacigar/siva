@@ -9,5 +9,6 @@ siva.modname = "siva"
 siva.modpath = minetest.get_modpath(siva.modname)
 
 dofile(siva.modpath .. "/api.lua")
+dofile(siva.modpath .. "/methods/aux.lua")
 dofile(siva.modpath .. "/methods/basic.lua")
 dofile(siva.modpath .. "/methods/tree.lua")

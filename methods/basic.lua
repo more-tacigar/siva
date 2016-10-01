@@ -26,7 +26,7 @@ local function method_func(pos, node, space)
 	end
 end
 
-siva.register_method("basic", {
+siva.register_method("siva:basic", {
 	description = "siva : basic method",
 	default_arguments = {x = 5, y = 5, z = 5},
 	method_func = method_func,

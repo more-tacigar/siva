@@ -46,9 +46,10 @@ end
 
 	if file then
 		config = minetest.deserialize(file:read("*a"))
-
-		is_activated = config.is_activated
 		
+		is_activated = config.is_activated
+		node_method_map = config.node_method_map
+
 		file:close()
 		return
 	end
@@ -66,6 +67,7 @@ minetest.register_on_shutdown(function()
 	if file then
 		local config = {
 			is_activated = is_activated,
+			node_method_map = node_method_map,
 		}
 		file:write(minetest.serialize(config))
 		file:close()
@@ -77,6 +79,16 @@ end)
 	minetest.register_on_dignode(function(pos, oldnode, digger)
 		if (not is_activated) or (not node_method_map[oldnode.name]) then
 			return
+		end
+
+		local method_name = node_method_map[oldnode.name].method_name
+		local method_func = siva.registered_methods[method_name]
+		local arguments = node_method_map[oldnode.name].arguments
+		local targets = method_func(pos, oldnode, digger, arguments)
+		
+		for _, target in ipairs(targets) do
+			local node = minetest.get_node(target)
+			minetest.node_dig(target, node, digger)
 		end
 	end)
 end) ()

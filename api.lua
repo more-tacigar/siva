@@ -39,6 +39,15 @@ function siva.associate_node_with_method(nodename, method_name, arguments)
 	}
 end
 
+-- siva.default_settings set default siva settings.
+function siva.default_settings()
+	for nodename, nodedef in pairs(minetest.registered_nodes) do
+		if nodedef.drawtype == "normal" then
+			siva.associate_node_with_method(nodename, "siva:basic")
+		end
+	end
+end
+
 -- load a siva config file.
 ;(function()
 	local worldpath = minetest.get_worldpath()
@@ -46,15 +55,16 @@ end
 
 	if file then
 		config = minetest.deserialize(file:read("*a"))
-
-		is_activated = config.is_activated
 		
+		is_activated = config.is_activated
+		node_method_map = config.node_method_map
+
 		file:close()
 		return
 	end
 
 	minetest.after(0, function()
-			       
+		siva.default_settings()	       
 	end)
 end) ()
 
@@ -66,6 +76,7 @@ minetest.register_on_shutdown(function()
 	if file then
 		local config = {
 			is_activated = is_activated,
+			node_method_map = node_method_map,
 		}
 		file:write(minetest.serialize(config))
 		file:close()
@@ -77,6 +88,18 @@ end)
 	minetest.register_on_dignode(function(pos, oldnode, digger)
 		if (not is_activated) or (not node_method_map[oldnode.name]) then
 			return
+		end
+
+		local method_name = node_method_map[oldnode.name].method_name
+
+		local method_func = siva.registered_methods[method_name].method_func
+		local arguments = node_method_map[oldnode.name].arguments
+		
+		local targets = method_func(pos, oldnode, digger, arguments)
+		
+		for _, target in ipairs(targets) do
+			local node = minetest.get_node(target)
+			minetest.remove_node(target)
 		end
 	end)
 end) ()

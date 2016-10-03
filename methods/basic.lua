@@ -25,7 +25,7 @@ local function method_func(pos, node, digger, space)
 			end
 		end
 	end
-	method_func_impl(pos, digger, space)
+	method_func_impl(pos)
 	return res
 end
 

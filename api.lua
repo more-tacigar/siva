@@ -39,6 +39,15 @@ function siva.associate_node_with_method(nodename, method_name, arguments)
 	}
 end
 
+-- siva.default_settings set default siva settings.
+function siva.default_settings()
+	for nodename, nodedef in pairs(minetest.registered_nodes) do
+		if nodedef.drawtype == "normal" then
+			siva.associate_node_with_method(nodename, "siva:basic")
+		end
+	end
+end
+
 -- load a siva config file.
 ;(function()
 	local worldpath = minetest.get_worldpath()
@@ -55,7 +64,7 @@ end
 	end
 
 	minetest.after(0, function()
-			       
+		siva.default_settings()	       
 	end)
 end) ()
 
@@ -82,13 +91,15 @@ end)
 		end
 
 		local method_name = node_method_map[oldnode.name].method_name
-		local method_func = siva.registered_methods[method_name]
+
+		local method_func = siva.registered_methods[method_name].method_func
 		local arguments = node_method_map[oldnode.name].arguments
+		
 		local targets = method_func(pos, oldnode, digger, arguments)
 		
 		for _, target in ipairs(targets) do
 			local node = minetest.get_node(target)
-			minetest.node_dig(target, node, digger)
+			minetest.remove_node(target)
 		end
 	end)
 end) ()

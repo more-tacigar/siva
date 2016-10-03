@@ -12,18 +12,21 @@ local directions = {
 	{ x =  1, y =  0, z =  0 },
 }
 
-local function method_func(pos, node, space)
+local function method_func(pos, node, digger, space)
 	local res = {}
+	local function method_func_impl(pos1)
+		for _, direction in ipairs(directions) do
+			local pos2 = vector.add(pos1, direction)
+			local node2 = minetest.get_node(pos2)
 
-	for _, direction in ipairs(directions) do
-		local pos2 = vector.add(pos, direction)
-		local node2 = minetest.get_node(pos2)
-
-		if node.name == node2.name and siva.aux.in_space(pos, pos2, space) then
-			table.insert(res, pos2)
-			method_func(pos2, node2)
+			if node.name == node2.name and siva.aux.in_space(pos, pos2, space) and not table.find_vector(res, pos2) then
+				table.insert(res, pos2)
+				method_func_impl(pos2)
+			end
 		end
 	end
+	method_func_impl(pos, digger, space)
+	return res
 end
 
 siva.register_method("siva:basic", {

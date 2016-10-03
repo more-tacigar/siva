@@ -43,7 +43,11 @@ end
 function siva.default_settings()
 	for nodename, nodedef in pairs(minetest.registered_nodes) do
 		if nodedef.drawtype == "normal" then
-			siva.associate_node_with_method(nodename, "siva:basic")
+			if minetest.get_item_group(nodename, "tree") > 0 then
+				siva.associate_node_with_method(nodename, "siva:tree")
+			else
+				siva.associate_node_with_method(nodename, "siva:basic")
+			end
 		end
 	end
 end

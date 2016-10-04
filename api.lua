@@ -45,6 +45,8 @@ function siva.default_settings()
 		if nodedef.drawtype == "normal" then
 			if minetest.get_item_group(nodename, "tree") > 0 then
 				siva.associate_node_with_method(nodename, "siva:tree")
+			elseif siva.aux.is_dirt(nodename) then
+				siva.associate_node_with_method(nodename, "siva:dirt")
 			else
 				siva.associate_node_with_method(nodename, "siva:basic")
 			end
@@ -58,7 +60,7 @@ end
 	local file = io.open(worldpath .. "/siva-config", "r")
 
 	if file then
-		config = minetest.deserialize(file:read("*a"))
+		local config = minetest.deserialize(file:read("*a"))
 		
 		is_activated = config.is_activated
 		node_method_map = config.node_method_map
@@ -95,15 +97,21 @@ end)
 		end
 
 		local method_name = node_method_map[oldnode.name].method_name
-
 		local method_func = siva.registered_methods[method_name].method_func
 		local arguments = node_method_map[oldnode.name].arguments
-		
 		local targets = method_func(pos, oldnode, digger, arguments)
-		
+		local inv = digger:get_inventory()
+
 		for _, target in ipairs(targets) do
 			local node = minetest.get_node(target)
+			local drops = minetest.get_node_drops(node.name)
+			
 			minetest.remove_node(target)
+
+			for _, itemname in ipairs(drops) do
+				local leftover = inv:add_item("main", ItemStack(itemname))
+				minetest.add_item(pos, leftover)
+			end
 		end
 	end)
 end) ()

@@ -3,6 +3,8 @@
 -- https://github.com/tacigar/siva
 ------------------------------------------------------------
 
+print("loading siva ... ")
+
 siva = {}
 
 siva.modname = "siva"

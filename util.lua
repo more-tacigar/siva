@@ -31,11 +31,11 @@ function table.append(t1, t2)
 	return t1
 end
 
--- siva.aux represents a table that contains auxiliary functions.
-siva.aux = {}
+-- siva.util represents a table that contains auxiliary functions.
+siva.util = {}
 
--- siva.aux.in_space reports whether pos2 is in space of pos1.
-function siva.aux.in_space(pos1, pos2, space)
+-- siva.util.in_space reports whether pos2 is in space of pos1.
+function siva.util.in_space(pos1, pos2, space)
 	for _, coord in pairs{'x', 'y', 'z'} do
 		if math.abs(pos1[coord] - pos2[coord]) > space[coord] / 2 then
 			return false
@@ -52,7 +52,7 @@ local dirt_nodes = {
 	"default:dirt_with_snow"
 }
 
--- siva.aux.is_dirt reports whether is nodename dirt node name.
-function siva.aux.is_dirt(nodename)
+-- siva.util.is_dirt reports whether is nodename dirt node name.
+function siva.util.is_dirt(nodename)
 	return table.find(dirt_nodes, nodename)
 end

@@ -45,7 +45,7 @@ function siva.default_settings()
 		if nodedef.drawtype == "normal" then
 			if minetest.get_item_group(nodename, "tree") > 0 then
 				siva.associate_node_with_method(nodename, "siva:tree")
-			elseif siva.aux.is_dirt(nodename) then
+			elseif siva.util.is_dirt(nodename) then
 				siva.associate_node_with_method(nodename, "siva:dirt")
 			else
 				siva.associate_node_with_method(nodename, "siva:basic")

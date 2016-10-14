@@ -21,7 +21,7 @@ local function method_func(pos, node, digger, space)
 			local pos2 = vector.add(pos1, direction)
 			local node2 = minetest.get_node(pos2)
 
-			if siva.aux.is_dirt(node2.name) and siva.aux.in_space(pos, pos2, space) and not table.find_vector(res, pos2) then
+			if siva.util.is_dirt(node2.name) and siva.util.in_space(pos, pos2, space) and not table.find_vector(res, pos2) then
 				table.insert(res, pos2)
 				method_func_impl(pos2)
 			end

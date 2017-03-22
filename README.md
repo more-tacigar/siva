@@ -1,4 +1,4 @@
-# Siva - Minetest mod
+# siva - Minetest MOD, which Enables Players to Dig Nodes Efficiently - #
 
 ## Overview
 
